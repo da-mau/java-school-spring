@@ -3,9 +3,8 @@ package com.mau.spring.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "employee")
@@ -23,6 +22,7 @@ public class Employee {
     private String status;
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
+    @NotNull(message = "Contact Information cannot be null")
     private ContactInformation contactInformation;
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
