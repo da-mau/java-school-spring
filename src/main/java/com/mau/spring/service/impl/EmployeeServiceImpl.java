@@ -4,9 +4,10 @@ import com.mau.spring.entity.Employee;
 import com.mau.spring.repository.EmployeeRepository;
 import com.mau.spring.service.EmployeeService;
 import org.springframework.data.domain.Example;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
+@Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private static final String STATUS_INACTIVE = "Inactive";

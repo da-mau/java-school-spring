@@ -3,6 +3,8 @@ package com.mau.spring.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 
 @Data
 @Entity
@@ -16,10 +18,15 @@ public class ContactInformation {
     @MapsId
     @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
     private Employee employee;
+    @NotEmpty(message = "Address is mandatory")
     private String streetName;
+    @Min(value = 0, message = "Address is mandatory")
     private int streetNumber;
+    @Min(value = 0, message = "Address is mandatory")
     private int zipCode;
+    @NotEmpty(message = "Address is mandatory")
     private String state;
+    @NotEmpty(message = "Address is mandatory")
     private String country;
     @Column(name = "personal_email")
     private String email;
