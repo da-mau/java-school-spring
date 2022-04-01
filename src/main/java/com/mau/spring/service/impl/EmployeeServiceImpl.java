@@ -29,6 +29,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public boolean updateEmployee(Employee employee) {
         Employee aux = new Employee();
         aux.setCorpEmail(employee.getCorpEmail());
+        aux.setStatus(STATUS_ACTIVE);
         Example<Employee> example = Example.of(aux);
         Optional<Employee> optionalEmployee = this.employeeRepository.findOne(example);
         if(!optionalEmployee.isPresent()){
@@ -38,8 +39,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         dbEmployee.setLastName(employee.getLastName());
         dbEmployee.setBirthday(employee.getBirthday());
         dbEmployee.setGender(employee.getGender());
-        dbEmployee.setStatus(employee.getStatus());
+        dbEmployee.setStatus(STATUS_ACTIVE);
         dbEmployee.setFirstName(employee.getFirstName());
+        long ciId = dbEmployee.getContactInformation().getContactInformationId();
+        employee.getContactInformation().setContactInformationId(ciId);
+        dbEmployee.setContactInformation(employee.getContactInformation());
         this.employeeRepository.save(dbEmployee);
         return true;
     }
