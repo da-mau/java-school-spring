@@ -11,6 +11,7 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private static final String STATUS_INACTIVE = "Inactive";
+    private static final String STATUS_ACTIVE = "Active";
 
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
@@ -19,6 +20,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee saveEmployee(Employee employee) {
+        employee.setStatus(STATUS_ACTIVE);
         this.employeeRepository.save(employee);
         return employee;
     }
@@ -47,6 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee aux = new Employee();
         aux.setCorpEmail(corpEmail);
+        aux.setStatus(STATUS_ACTIVE);
         Example<Employee> example = Example.of(aux);
         Optional<Employee> optionalEmployee = this.employeeRepository.findOne(example);
         if(!optionalEmployee.isPresent()){
