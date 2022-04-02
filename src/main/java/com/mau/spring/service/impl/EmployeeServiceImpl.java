@@ -7,6 +7,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
@@ -16,6 +17,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
+    }
+
+    @Override
+    public Employee getEmployee(String corpEmail, boolean isAdmin) {
+        Employee aux = new Employee();
+        aux.setCorpEmail(corpEmail);
+        aux.setStatus(STATUS_ACTIVE);
+        Example<Employee> example = Example.of(aux);
+        Optional<Employee> optionalEmployee = this.employeeRepository.findOne(example);
+        if (optionalEmployee.isPresent()) {
+            aux = optionalEmployee.get();
+            if (!isAdmin) {
+                aux.setPositions(null);
+            }
+        } else {
+            aux = null;
+        }
+        return aux;
     }
 
     @Override
@@ -32,7 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         aux.setStatus(STATUS_ACTIVE);
         Example<Employee> example = Example.of(aux);
         Optional<Employee> optionalEmployee = this.employeeRepository.findOne(example);
-        if(!optionalEmployee.isPresent()){
+        if (!optionalEmployee.isPresent()) {
             return false;
         }
         Employee dbEmployee = optionalEmployee.get();
@@ -49,14 +68,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public boolean deleteEmployee(String corpEmail){
+    public boolean deleteEmployee(String corpEmail) {
 
         Employee aux = new Employee();
         aux.setCorpEmail(corpEmail);
         aux.setStatus(STATUS_ACTIVE);
         Example<Employee> example = Example.of(aux);
         Optional<Employee> optionalEmployee = this.employeeRepository.findOne(example);
-        if(!optionalEmployee.isPresent()){
+        if (!optionalEmployee.isPresent()) {
             return false;
         }
         Employee dbEmployee = optionalEmployee.get();
