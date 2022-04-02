@@ -4,7 +4,9 @@ import com.mau.spring.entity.ContactInformation;
 import com.mau.spring.entity.Employee;
 import com.mau.spring.entity.Position;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AbstractTest {
     protected static final String EMAIL_1 = "a@a.com";
@@ -15,7 +17,7 @@ public class AbstractTest {
     protected static final String LAST_NAME = "Cerna";
     protected static final String STATUS = "Active";
     protected static final String STATUS_INACTIVE = "Inactive";
-    protected static final Date BIRTHDAY  = new Date();
+    protected static final Date BIRTHDAY = new Date();
     protected static final String STREET_NAME = "Random Street";
     protected static final String STREET_NAME_2 = "Random Street 2";
     protected static final int STREET_NUMBER = 10;
@@ -51,12 +53,18 @@ public class AbstractTest {
         return ci;
     }
 
-    public Position getPosition(){
+    public Position getPosition(int i) {
         Position position = new Position();
-        position.setPositionName(POSITION_NAME);
-        position.setStartDate(BIRTHDAY);
-        position.setEndDate(null);
-        position.setSalary(SALARY);
+        position.setPositionName(POSITION_NAME + i);
+        position.setSalary(SALARY * i);
         return position;
+    }
+
+    public List<Position> getPositionList() {
+        List<Position> result = new ArrayList<>();
+        result.add(getPosition(1));
+        result.add(getPosition(2));
+        result.add(getPosition(3));
+        return result;
     }
 }

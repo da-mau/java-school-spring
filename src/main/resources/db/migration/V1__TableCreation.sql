@@ -44,7 +44,7 @@ ALTER TABLE contact_information ADD CONSTRAINT contact_information_fk FOREIGN KE
 
 -- DROP TABLE "position";
 
-CREATE TABLE "position" (
+CREATE TABLE employee_position (
 	employee_id int4 NOT NULL,
 	position_name varchar(80) NOT NULL,
 	salary numeric NOT NULL,
@@ -55,4 +55,4 @@ CREATE TABLE "position" (
 
 -- public."position" foreign keys
 
-ALTER TABLE "position" ADD CONSTRAINT position_fk FOREIGN KEY (employee_id) REFERENCES employee(employee_id);
+ALTER TABLE employee_position ADD CONSTRAINT position_fk FOREIGN KEY (employee_id) REFERENCES employee(employee_id);

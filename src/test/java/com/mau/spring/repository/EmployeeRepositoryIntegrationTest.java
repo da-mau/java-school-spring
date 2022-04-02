@@ -3,7 +3,6 @@ package com.mau.spring.repository;
 import com.mau.spring.AbstractTest;
 import com.mau.spring.entity.ContactInformation;
 import com.mau.spring.entity.Employee;
-import com.mau.spring.entity.Position;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -27,29 +26,13 @@ public class EmployeeRepositoryIntegrationTest extends AbstractTest {
     @Autowired
     EmployeeRepository employeeRepository;
 
-    @Test
-    public void saveUserTest() {
-        Employee employee = getEmployee();
-        employee = employeeRepository.save(employee);
-        assertThat(employee.getEmployeeId(), notNullValue());
-    }
-
-    @Test
-    public void modifyUserTest() {
-        Employee employee = getEmployee();
-        employee = employeeRepository.save(employee);
-        employee.setCorpEmail(EMAIL_2);
-        employee = employeeRepository.save(employee);
-        Employee employee2 = employeeRepository.getById(employee.getEmployeeId());
-        assertThat(employeeRepository.findById(employee2.getEmployeeId()).get().getCorpEmail(), is(equalTo(EMAIL_2)));
-    }
-
     //search user
     @Test
     public void searchUserTest() {
         Employee employee = getEmployee();
+        employee.setContactInformation(getContactInformation());
         employee = entityManager.persistAndFlush(employee);
-        Example<Employee> example = Example.of(employee);
+        Example<Employee> example = Example.of(getEmployee());
         Optional<Employee> optionalEmployee = employeeRepository.findOne(example);
         assertThat(optionalEmployee.get(), is(equalTo(employee)));
     }
@@ -58,7 +41,8 @@ public class EmployeeRepositoryIntegrationTest extends AbstractTest {
     @Test
     public void searchUserNegativeTest() {
         Employee employee = getEmployee();
-        employee = entityManager.persistAndFlush(employee);
+        employee.setContactInformation(getContactInformation());
+        entityManager.persistAndFlush(employee);
         Employee employee2 = new Employee();
         employee2.setCorpEmail("Random String");
         Example<Employee> example = Example.of(employee2);
@@ -71,7 +55,6 @@ public class EmployeeRepositoryIntegrationTest extends AbstractTest {
     @Test
     public void saveUserWithCITest() {
         Employee employee = getEmployee();
-        //employee = employeeRepository.save(employee);
         ContactInformation ci = getContactInformation();
         employee.setContactInformation(ci);
         employeeRepository.save(employee);
@@ -83,7 +66,6 @@ public class EmployeeRepositoryIntegrationTest extends AbstractTest {
     @Test
     public void modifyUserWithCITest() {
         Employee employee = getEmployee();
-        //employee = employeeRepository.save(employee);
         ContactInformation ci = getContactInformation();
         employee.setContactInformation(ci);
         employeeRepository.save(employee);
@@ -97,26 +79,24 @@ public class EmployeeRepositoryIntegrationTest extends AbstractTest {
     @Test
     public void saveUserWithPositionTest() {
         Employee employee = getEmployee();
-        //employee = employeeRepository.save(employee);
-        Position position = getPosition();
-        employee.setPosition(position);
-        employeeRepository.save(employee);
+        employee.setContactInformation(getContactInformation());
+        employee.setPositions(getPositionList());
+        employee = employeeRepository.save(employee);
         assertThat(employee.getEmployeeId(), notNullValue());
-        assertThat(employee.getPosition().getEmployee().getEmployeeId(), is(equalTo(employee.getEmployeeId())));
+        assertThat(employee.getPositions().get(0).getEmployee().getEmployeeId(), is(equalTo(employee.getEmployeeId())));
     }
 
     //update
     @Test
     public void modifyUserWithPositionTest() {
         Employee employee = getEmployee();
-        //employee = employeeRepository.save(employee);
-        Position position = getPosition();
-        employee.setPosition(position);
+        employee.setContactInformation(getContactInformation());
+        employee.setPositions(getPositionList());
         employeeRepository.save(employee);
-        assertThat(employee.getPosition().getEmployee().getEmployeeId(), is(equalTo(employee.getEmployeeId())));
-        position.setPositionName(POSITION_NAME_2);
+        assertThat(employee.getPositions().get(0).getEmployee().getEmployeeId(), is(equalTo(employee.getEmployeeId())));
+        employee.getPositions().get(0).setPositionName(POSITION_NAME_2);
         employeeRepository.save(employee);
-        assertThat(employee.getPosition().getPositionName(), is(equalTo(POSITION_NAME_2)));
+        assertThat(employee.getPositions().get(0).getPositionName(), is(equalTo(POSITION_NAME_2)));
     }
 
 }
