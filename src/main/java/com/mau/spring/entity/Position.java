@@ -5,25 +5,21 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Data
 @Entity
-@Table
+@Table(name = "employee_position")
 public class Position {
     @Id
     @Column(name = "position_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long positionId;
     @ManyToOne
-//    @MapsId
     @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
     @JsonIgnore
     @ToString.Exclude
     private Employee employee;
     private String positionName;
     private double salary;
-//    private Date startDate;
-//    private Date endDate;
 
 }

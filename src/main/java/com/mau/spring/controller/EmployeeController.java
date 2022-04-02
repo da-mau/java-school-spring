@@ -16,7 +16,7 @@ public class EmployeeController {
 
     @GetMapping("/employee")
     public ResponseEntity getEmployee(@RequestParam String corporateEmail) {
-        Employee employee = employeeService.getEmployee(corporateEmail, true);
+        Employee employee = employeeService.getEmployee(corporateEmail, false);
         if (employee != null) {
             return new ResponseEntity<>(employee, HttpStatus.OK);
         } else {

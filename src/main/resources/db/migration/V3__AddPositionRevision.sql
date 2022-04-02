@@ -1,9 +1,3 @@
-ALTER TABLE "position" DROP COLUMN start_date;
-ALTER TABLE "position" DROP COLUMN end_date;
-
-CREATE SEQUENCE hibernate_sequence  INCREMENT 1  MINVALUE 1
-  MAXVALUE 9223372036854775807
-  START 1
-  CACHE 1;
-
-ALTER TABLE "position" ADD "order" integer NOT NULL;
+ALTER TABLE employee_position DROP COLUMN start_date;
+ALTER TABLE employee_position DROP COLUMN end_date;
+ALTER TABLE employee_position ADD position_order integer;

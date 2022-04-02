@@ -1,11 +1,10 @@
 package com.mau.spring.entity;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class Employee {
     @NotNull(message = "Contact Information cannot be null")
     private ContactInformation contactInformation;
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    @OrderColumn(name = "order")
+    @OrderColumn(name = "position_order")
     private List<Position> positions;
 
     public void setContactInformation(ContactInformation contactInformation) {
@@ -38,13 +37,23 @@ public class Employee {
     }
 
     public void setPositions(List<Position> positions) {
-            this.positions = positions;
-            for(Position p : positions){
+        this.positions = positions;
+        if(positions != null){
+            for (Position p : positions) {
                 p.setEmployee(this);
-    }
-//        this.position = position;
-//        this.position.setEmployee(this);
+            }
+        }
+
     }
 
-
+    public void addPosition(Position position) {
+        if (this.getPositions().isEmpty()) {
+            List<Position> positionAux = new ArrayList<>();
+            positionAux.add(position);
+            this.setPositions(positionAux);
+        } else {
+            position.setEmployee(this);
+            this.getPositions().add(position);
+        }
+    }
 }

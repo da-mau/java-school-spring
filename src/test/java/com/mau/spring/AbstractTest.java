@@ -4,7 +4,6 @@ import com.mau.spring.entity.ContactInformation;
 import com.mau.spring.entity.Employee;
 import com.mau.spring.entity.Position;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

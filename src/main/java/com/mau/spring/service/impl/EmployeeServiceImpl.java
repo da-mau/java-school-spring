@@ -1,11 +1,13 @@
 package com.mau.spring.service.impl;
 
 import com.mau.spring.entity.Employee;
+import com.mau.spring.entity.Position;
 import com.mau.spring.repository.EmployeeRepository;
 import com.mau.spring.service.EmployeeService;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -82,5 +84,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         dbEmployee.setStatus(STATUS_INACTIVE);
         this.employeeRepository.save(dbEmployee);
         return true;
+    }
+
+    @Override
+    public boolean addPosition(Position position, String corpEmail) {
+        boolean result = true;
+        Employee employee = getEmployee(corpEmail, true);
+        if(employee != null){
+           employee.addPosition(position);
+           employeeRepository.save(employee);
+        }else{
+            result = false;
+        }
+        return result;
     }
 }

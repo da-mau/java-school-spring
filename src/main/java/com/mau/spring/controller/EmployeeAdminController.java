@@ -1,6 +1,7 @@
 package com.mau.spring.controller;
 
 import com.mau.spring.entity.Employee;
+import com.mau.spring.entity.Position;
 import com.mau.spring.service.EmployeeService;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,16 @@ public class EmployeeAdminController {
             return new ResponseEntity<>(employee, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/employee/{corporateEmail}/position")
+    public ResponseEntity addPosition(@RequestBody Position position, @PathVariable String corporateEmail) {
+        boolean added = employeeService.addPosition(position, corporateEmail);
+        if(added){
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 }
