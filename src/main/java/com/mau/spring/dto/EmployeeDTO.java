@@ -2,6 +2,7 @@ package com.mau.spring.dto;
 
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.beans.Transient;
@@ -24,6 +25,7 @@ public class EmployeeDTO {
     private String gender;
     @NotEmpty(message = "Birthday is mandatory")
     private String birthday;
+    @Valid
     @NotNull(message = "Contact Information cannot be null")
     private ContactInformationDTO contactInformation;
 
