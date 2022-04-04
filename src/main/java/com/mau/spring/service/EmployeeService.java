@@ -5,9 +5,9 @@ import com.mau.spring.entity.Position;
 
 public interface EmployeeService {
 
-    Employee getEmployee(String corpEmail, boolean isAdmin);
+    Employee getEmployee(Long id, boolean includeDeleted);
     Employee saveEmployee(Employee employee);
     boolean updateEmployee(Employee employee);
-    boolean deleteEmployee(String corpEmail);
-    boolean addPosition(Position position, String corpEmail);
+    boolean deleteEmployee(Long id);
+    boolean addPosition(Position position, Long id);
 }

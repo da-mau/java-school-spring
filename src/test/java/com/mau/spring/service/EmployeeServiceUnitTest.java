@@ -1,6 +1,7 @@
 package com.mau.spring.service;
 
 import com.mau.spring.AbstractTest;
+import com.mau.spring.entity.ContactInformation;
 import com.mau.spring.entity.Employee;
 import com.mau.spring.repository.EmployeeRepository;
 import com.mau.spring.service.impl.EmployeeServiceImpl;
@@ -40,6 +41,10 @@ public class EmployeeServiceUnitTest extends AbstractTest {
     @Test
     void employeeUpdateTest(){
         Employee employee  = getEmployee();
+        employee.setEmployeeId(1L);
+        ContactInformation ci = getContactInformation();
+        ci.setContactInformationId(2L);
+        employee.setContactInformation(ci);
         Example<Employee> example = Example.of(employee);
         Optional<Employee> optional = Optional.of(employee);
         when(employeeRepository.save(employee)).thenReturn(employee);
@@ -54,11 +59,12 @@ public class EmployeeServiceUnitTest extends AbstractTest {
     @Test
     void employeeDeleteTest(){
         Employee employee  = getEmployee();
+        employee.setEmployeeId(1L);
         Example<Employee> example = Example.of(employee);
         Optional<Employee> optional = Optional.of(employee);
         when(employeeRepository.save(employee)).thenReturn(employee);
-        when(employeeRepository.findOne(ArgumentMatchers.any())).thenReturn(optional);
-        employeeService.deleteEmployee(EMAIL_1);
+        when(employeeRepository.findById(ArgumentMatchers.any())).thenReturn(optional);
+        employeeService.deleteEmployee(1L);
         verify(this.employeeRepository).save(captor.capture());
         assertEquals(STATUS_INACTIVE, captor.getValue().getStatus());
     }

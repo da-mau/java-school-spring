@@ -7,7 +7,6 @@ import com.mau.spring.service.EmployeeService;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -22,17 +21,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee getEmployee(String corpEmail, boolean isAdmin) {
-        Employee aux = new Employee();
-        aux.setCorpEmail(corpEmail);
-        aux.setStatus(STATUS_ACTIVE);
-        Example<Employee> example = Example.of(aux);
-        Optional<Employee> optionalEmployee = this.employeeRepository.findOne(example);
+    public Employee getEmployee(Long id, boolean includeDeleted) {
+        Optional<Employee> optionalEmployee;
+        Employee aux;
+        if (includeDeleted) {
+            optionalEmployee = this.employeeRepository.findById(id);
+        } else {
+            aux = new Employee();
+            aux.setEmployeeId(id);
+            aux.setStatus(STATUS_ACTIVE);
+            Example<Employee> example = Example.of(aux);
+            optionalEmployee = this.employeeRepository.findOne(example);
+        }
         if (optionalEmployee.isPresent()) {
             aux = optionalEmployee.get();
-            if (!isAdmin) {
-                aux.setPositions(null);
-            }
         } else {
             aux = null;
         }
@@ -48,15 +50,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public boolean updateEmployee(Employee employee) {
-        Employee aux = new Employee();
-        aux.setCorpEmail(employee.getCorpEmail());
-        aux.setStatus(STATUS_ACTIVE);
-        Example<Employee> example = Example.of(aux);
-        Optional<Employee> optionalEmployee = this.employeeRepository.findOne(example);
-        if (!optionalEmployee.isPresent()) {
+        Employee dbEmployee = getEmployee(employee.getEmployeeId(), true);
+        if (dbEmployee == null) {
             return false;
         }
-        Employee dbEmployee = optionalEmployee.get();
+        dbEmployee.setCorpEmail(employee.getCorpEmail());
         dbEmployee.setLastName(employee.getLastName());
         dbEmployee.setBirthday(employee.getBirthday());
         dbEmployee.setGender(employee.getGender());
@@ -70,13 +68,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public boolean deleteEmployee(String corpEmail) {
-
-        Employee aux = new Employee();
-        aux.setCorpEmail(corpEmail);
-        aux.setStatus(STATUS_ACTIVE);
-        Example<Employee> example = Example.of(aux);
-        Optional<Employee> optionalEmployee = this.employeeRepository.findOne(example);
+    public boolean deleteEmployee(Long id) {
+        Optional<Employee> optionalEmployee = this.employeeRepository.findById(id);
         if (!optionalEmployee.isPresent()) {
             return false;
         }
@@ -87,13 +80,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public boolean addPosition(Position position, String corpEmail) {
+    public boolean addPosition(Position position, Long id) {
         boolean result = true;
-        Employee employee = getEmployee(corpEmail, true);
-        if(employee != null){
-           employee.addPosition(position);
-           employeeRepository.save(employee);
-        }else{
+        Employee employee = getEmployee(id, false);
+        if (employee != null) {
+            employee.addPosition(position);
+            employeeRepository.save(employee);
+        } else {
             result = false;
         }
         return result;

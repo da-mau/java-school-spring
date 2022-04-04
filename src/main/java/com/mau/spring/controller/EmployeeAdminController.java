@@ -1,68 +1,83 @@
 package com.mau.spring.controller;
 
+import com.mau.spring.dto.EmployeeAdminDTO;
+import com.mau.spring.dto.EmployeeDTO;
+import com.mau.spring.dto.PositionDTO;
 import com.mau.spring.entity.Employee;
 import com.mau.spring.entity.Position;
 import com.mau.spring.service.EmployeeService;
-import org.apache.coyote.Response;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 
 @RestController()
 @RequestMapping("/admin")
-public class EmployeeAdminController {
+public class EmployeeAdminController extends AbstractEmployeeController {
     private final EmployeeService employeeService;
 
-    public EmployeeAdminController(EmployeeService employeeService) {
+    public EmployeeAdminController(EmployeeService employeeService, ModelMapper modelMapper) {
+        super(modelMapper);
         this.employeeService = employeeService;
     }
 
     @PostMapping("/employee")
-    public ResponseEntity createEmployee(@Valid @RequestBody Employee employee) {
+    public ResponseEntity createEmployee(@Valid @RequestBody EmployeeDTO employeeDto) throws ParseException {
+        Employee employee = convertEmployeeDTOToEntity(employeeDto);
         Employee createdEmployee = employeeService.saveEmployee(employee);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-
+        ResponseEntity result = ResponseEntity.status(HttpStatus.CREATED)
+                .header(HttpHeaders.LOCATION, "/employee/" + createdEmployee.getEmployeeId())
+                .build();
+        return result;
     }
 
-    @DeleteMapping("/employee")
-    public ResponseEntity deleteEmployee(@RequestParam String corporateEmail) {
-        boolean deleted = employeeService.deleteEmployee(corporateEmail);
+    @DeleteMapping("/employee/{id}")
+    public ResponseEntity deleteEmployee(@PathVariable Long id) {
+        boolean deleted = employeeService.deleteEmployee(id);
         if (deleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PutMapping("/employee")
-    public ResponseEntity updateEmployee(@Valid @RequestBody Employee employee, @RequestParam String corporateEmail) {
+    @PutMapping("/employee/{id}")
+    public ResponseEntity updateEmployee(@Valid @RequestBody EmployeeDTO employeeDto, @PathVariable Long id) throws ParseException {
+        Employee employee = convertEmployeeDTOToEntity(employeeDto);
+        employee.setEmployeeId(id);
         boolean updated = employeeService.updateEmployee(employee);
-        if(updated){
+        if (updated) {
             return new ResponseEntity<>(HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
-    @GetMapping("/employee")
-    public ResponseEntity getEmployee(@RequestParam String corporateEmail) {
-        Employee employee = employeeService.getEmployee(corporateEmail, true);
+    @GetMapping("/employee/{id}")
+    public ResponseEntity getEmployee(@PathVariable Long id) {
+        Employee employee = employeeService.getEmployee(id, true);
         if (employee != null) {
-            return new ResponseEntity<>(employee, HttpStatus.OK);
+            EmployeeAdminDTO dto = convertEmployeeToAdminDto(employee);
+            return new ResponseEntity<>(dto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @PostMapping("/employee/{corporateEmail}/position")
-    public ResponseEntity addPosition(@RequestBody Position position, @PathVariable String corporateEmail) {
-        boolean added = employeeService.addPosition(position, corporateEmail);
-        if(added){
+    @PostMapping("/employee/{id}/position")
+    public ResponseEntity addPosition(@RequestBody PositionDTO positionDto, @PathVariable Long id) throws ParseException {
+        Position position = convertPositionDTOToEntity(positionDto);
+        boolean added = employeeService.addPosition(position, id);
+        if (added) {
             return new ResponseEntity<>(HttpStatus.CREATED);
-        }else{
+        } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
+
+
 }
