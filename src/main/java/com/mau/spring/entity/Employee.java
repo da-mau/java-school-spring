@@ -12,6 +12,8 @@ import java.util.List;
 @Data
 
 public class Employee {
+    public static final String STATUS_INACTIVE = "Inactive";
+    public static final String STATUS_ACTIVE = "Active";
     @Id
     @Column(name = "employee_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,13 +47,18 @@ public class Employee {
     }
 
     public void addPosition(Position position) {
+        position.setStatus(STATUS_ACTIVE);
         if (this.getPositions().isEmpty()) {
             List<Position> positionAux = new ArrayList<>();
             positionAux.add(position);
             this.setPositions(positionAux);
         } else {
             position.setEmployee(this);
-            this.getPositions().add(position);
+            List<Position> positions = this.getPositions();
+            for(Position aux : positions){
+                aux.setStatus(STATUS_INACTIVE);
+            }
+            positions.add(position);
         }
     }
 }
