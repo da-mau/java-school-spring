@@ -21,5 +21,6 @@ public class Position {
     private Employee employee;
     private String positionName;
     private double salary;
+    private String status;
 
 }

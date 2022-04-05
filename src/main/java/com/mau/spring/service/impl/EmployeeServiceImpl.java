@@ -12,8 +12,6 @@ import java.util.Optional;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
-    private static final String STATUS_INACTIVE = "Inactive";
-    private static final String STATUS_ACTIVE = "Active";
 
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
@@ -29,7 +27,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else {
             aux = new Employee();
             aux.setEmployeeId(id);
-            aux.setStatus(STATUS_ACTIVE);
+            aux.setStatus(Employee.STATUS_ACTIVE);
             Example<Employee> example = Example.of(aux);
             optionalEmployee = this.employeeRepository.findOne(example);
         }
@@ -43,7 +41,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee saveEmployee(Employee employee) {
-        employee.setStatus(STATUS_ACTIVE);
+        employee.setStatus(Employee.STATUS_ACTIVE);
         this.employeeRepository.save(employee);
         return employee;
     }
@@ -58,7 +56,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         dbEmployee.setLastName(employee.getLastName());
         dbEmployee.setBirthday(employee.getBirthday());
         dbEmployee.setGender(employee.getGender());
-        dbEmployee.setStatus(STATUS_ACTIVE);
+        dbEmployee.setStatus(Employee.STATUS_ACTIVE);
         dbEmployee.setFirstName(employee.getFirstName());
         long ciId = dbEmployee.getContactInformation().getContactInformationId();
         employee.getContactInformation().setContactInformationId(ciId);
@@ -74,7 +72,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             return false;
         }
         Employee dbEmployee = optionalEmployee.get();
-        dbEmployee.setStatus(STATUS_INACTIVE);
+        dbEmployee.setStatus(Employee.STATUS_INACTIVE);
         this.employeeRepository.save(dbEmployee);
         return true;
     }
