@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
-public class EmployeeDTO {
+public class    EmployeeDTO {
     private static final SimpleDateFormat dateFormat
             = new SimpleDateFormat("yyyy-MM-dd");
     private Long employeeId;

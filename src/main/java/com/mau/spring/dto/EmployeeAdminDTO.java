@@ -24,6 +24,7 @@ public class EmployeeAdminDTO {
     private ContactInformationDTO contactInformation;
     private List<PositionDTO> positions;
 
+
     @Transient
     public Date getBirthdayDateConverted() throws ParseException {
         if(this.birthday != null){

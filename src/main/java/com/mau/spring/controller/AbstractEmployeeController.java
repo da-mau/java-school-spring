@@ -8,7 +8,9 @@ import com.mau.spring.entity.Position;
 import org.modelmapper.ModelMapper;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public abstract class AbstractEmployeeController {
     protected static final String PATH = "/employee";
@@ -31,6 +33,24 @@ public abstract class AbstractEmployeeController {
         EmployeeAdminDTO employeeDto = modelMapper.map(employee, EmployeeAdminDTO.class);
         employeeDto.setBirthdayDate(employee.getBirthday());
         return employeeDto;
+    }
+
+    public List<EmployeeAdminDTO> convertEmployeesToAdminDto(List<Employee> employees) {
+        List<EmployeeAdminDTO> result = new ArrayList<>(employees.size());
+        for(Employee aux : employees){
+            EmployeeAdminDTO dto = convertEmployeeToAdminDto(aux);
+            result.add(dto);
+        }
+        return result;
+    }
+
+    public List<EmployeeDTO> convertEmployeesToDto(List<Employee> employees) {
+        List<EmployeeDTO> result = new ArrayList<>(employees.size());
+        for(Employee aux : employees){
+            EmployeeDTO dto = convertEmployeeToDto(aux);
+            result.add(dto);
+        }
+        return result;
     }
 
     public Employee convertEmployeeDTOToEntity(EmployeeDTO employeeDto) throws ParseException {
