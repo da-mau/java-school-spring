@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
+import java.util.List;
+import java.util.Set;
 
 @RestController()
 @RequestMapping("/admin")
@@ -77,6 +79,19 @@ public class EmployeeAdminController extends AbstractEmployeeController {
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+    }
+
+    @GetMapping("/employee/search")
+    public ResponseEntity addPosition(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String position, @RequestParam(defaultValue = "false") boolean includeInactive) throws ParseException {
+        List<String> status;
+        if(includeInactive){
+            status = List.of(Employee.STATUS_INACTIVE, Employee.STATUS_ACTIVE);
+        }else{
+            status = List.of(Employee.STATUS_ACTIVE);
+        }
+        List<Employee> employees = employeeService.getEmployeeByNameAndPosition(firstName, lastName, position, status);
+        List<EmployeeAdminDTO> result = convertEmployeesToAdminDto(employees);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
