@@ -1,5 +1,6 @@
 package com.mau.spring.controller;
 
+import com.mau.spring.projection.EmployeeByLocation;
 import com.mau.spring.projection.GenderEmployee;
 import com.mau.spring.projection.PositionEmployee;
 import com.mau.spring.projection.SalaryRangesByPosition;
@@ -37,6 +38,12 @@ public class ReportAdminController {
     @GetMapping("/report/rangesByPosition")
     public ResponseEntity getSalaryRangesByPosition() {
         List<SalaryRangesByPosition> result = reportService.getSalaryRangesByPosition();
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/report/employeesByLocation")
+    public ResponseEntity getEmployeesByLocation() {
+        List<EmployeeByLocation> result = reportService.getEmployeesByLocation();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
