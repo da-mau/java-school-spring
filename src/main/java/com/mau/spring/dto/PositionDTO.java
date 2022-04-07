@@ -6,5 +6,6 @@ import lombok.Data;
 public class PositionDTO {
     private String positionName;
     private double salary;
+    private String status;
 
 }
