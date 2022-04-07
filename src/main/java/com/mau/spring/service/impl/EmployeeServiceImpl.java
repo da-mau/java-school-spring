@@ -2,6 +2,7 @@ package com.mau.spring.service.impl;
 
 import com.mau.spring.entity.Employee;
 import com.mau.spring.entity.Position;
+import com.mau.spring.exception.DuplicatedMailException;
 import com.mau.spring.repository.EmployeeRepository;
 import com.mau.spring.service.EmployeeService;
 import org.springframework.data.domain.Example;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -33,23 +33,38 @@ public class EmployeeServiceImpl implements EmployeeService {
             Example<Employee> example = Example.of(aux);
             optionalEmployee = this.employeeRepository.findOne(example);
         }
-        if (optionalEmployee.isPresent()) {
-            aux = optionalEmployee.get();
-        } else {
-            aux = null;
-        }
+        aux = optionalEmployee.orElse(null);
         return aux;
     }
 
     @Override
     public Employee saveEmployee(Employee employee) {
-        employee.setStatus(Employee.STATUS_ACTIVE);
-        this.employeeRepository.save(employee);
+        Employee aux = new Employee();
+        aux.setCorpEmail(employee.getCorpEmail());
+        Example<Employee> example = Example.of(aux);
+        Optional<Employee> dbAux = this.employeeRepository.findOne(example);
+        if(!dbAux.isPresent()){
+            employee.setStatus(Employee.STATUS_ACTIVE);
+            this.employeeRepository.save(employee);
+        }else{
+            throw new DuplicatedMailException("Email already exists");
+        }
+
         return employee;
     }
 
     @Override
     public boolean updateEmployee(Employee employee) {
+        Employee aux = new Employee();
+        aux.setCorpEmail(employee.getCorpEmail());
+        Example<Employee> example = Example.of(aux);
+        Optional<Employee> dbAux = this.employeeRepository.findOne(example);
+        if(dbAux.isPresent()){
+            Employee conflict = dbAux.get();
+            if(!conflict.getEmployeeId().equals(employee.getEmployeeId())){
+                throw new DuplicatedMailException("Email already used by another employee");
+            }
+        }
         Employee dbEmployee = getEmployee(employee.getEmployeeId(), true);
         if (dbEmployee == null) {
             return false;
