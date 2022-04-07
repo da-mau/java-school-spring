@@ -26,7 +26,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         ErrorResponse error = new ErrorResponse("Please review your input and try again.", details);
-        return new ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = {DuplicatedMailException.class})
@@ -36,7 +36,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         ErrorResponse error = new ErrorResponse("The email is already used", details);
-        return new ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity(error, HttpStatus.CONFLICT);
     }
 
     @Override

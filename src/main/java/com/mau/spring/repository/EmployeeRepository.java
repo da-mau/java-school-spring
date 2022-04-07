@@ -15,7 +15,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "where e.status = 'Active'\n" +
             "and ep.status = 'Active'\n" +
             "and e.employee_id = ep.employee_id \n" +
-            "group by (ep.position_name);", nativeQuery = true)
+            "group by (ep.position_name) union\n" +
+            "select count(e.employee_id) as total, 'N/A' as positionName  \n" +
+            "from employee e where e.employee_id not in\n" +
+            "(select distinct(ep.employee_id) from employee_position ep)\n" +
+            "and e.status ='Active'", nativeQuery = true)
     List<PositionEmployee> countEmployeesByPosition();
 
     @Query(value = "Select count(e.gender) as count,  (select count(e2) from Employee as e2) as total, e.gender as genderName  \n" +
@@ -32,7 +36,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "and lower(e.firstName) like lower(concat('%', :firstName, '%'))\n" +
             "and lower(e.lastName)  like lower(concat('%', :lastName, '%'))")
     List<Employee> getEmployeeByPartialNamesAndPosition(@Param("firstName") String firstName, @Param("lastName") String lastName,
-                                                       @Param("position") String position, @Param("status")List<String> status );
+                                                        @Param("position") String position, @Param("status") List<String> status);
 
 
 }
