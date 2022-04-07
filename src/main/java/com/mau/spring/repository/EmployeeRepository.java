@@ -1,6 +1,7 @@
 package com.mau.spring.repository;
 
 import com.mau.spring.entity.Employee;
+import com.mau.spring.projection.EmployeeByLocation;
 import com.mau.spring.projection.GenderEmployee;
 import com.mau.spring.projection.PositionEmployee;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,5 +39,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> getEmployeeByPartialNamesAndPosition(@Param("firstName") String firstName, @Param("lastName") String lastName,
                                                         @Param("position") String position, @Param("status") List<String> status);
 
+    @Query(value = "select  ci.country as country, ci.state as state , count(e.employeeId) as count\n" +
+            "from Employee as e join ContactInformation as ci \n" +
+            "on e.employeeId = ci.employee.employeeId \n" +
+            "and e.status = 'Active' \n" +
+            "group by ci.country ,ci.state\n" +
+            "order by ci.country")
+    List<EmployeeByLocation> getEmployeesByCountryAndState();
 
 }

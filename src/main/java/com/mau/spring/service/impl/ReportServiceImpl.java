@@ -1,5 +1,6 @@
 package com.mau.spring.service.impl;
 
+import com.mau.spring.projection.EmployeeByLocation;
 import com.mau.spring.projection.GenderEmployee;
 import com.mau.spring.projection.PositionEmployee;
 import com.mau.spring.projection.SalaryRangesByPosition;
@@ -37,5 +38,10 @@ public class ReportServiceImpl implements ReportService {
     public List<SalaryRangesByPosition> getSalaryRangesByPosition() {
         List<SalaryRangesByPosition> result = positionRepository.getSalaryRangesByPosition();
         return  result;
+    }
+
+    @Override
+    public List<EmployeeByLocation> getEmployeesByLocation() {
+        return employeeRepository.getEmployeesByCountryAndState();
     }
 }
