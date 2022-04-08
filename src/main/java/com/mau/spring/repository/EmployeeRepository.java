@@ -4,6 +4,8 @@ import com.mau.spring.entity.Employee;
 import com.mau.spring.projection.EmployeeByLocation;
 import com.mau.spring.projection.GenderEmployee;
 import com.mau.spring.projection.PositionEmployee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,8 +38,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "and e.status IN (:status) \n" +
             "and lower(e.firstName) like lower(concat('%', :firstName, '%'))\n" +
             "and lower(e.lastName)  like lower(concat('%', :lastName, '%'))")
-    List<Employee> getEmployeeByPartialNamesAndPosition(@Param("firstName") String firstName, @Param("lastName") String lastName,
-                                                        @Param("position") String position, @Param("status") List<String> status);
+    Page<Employee> getEmployeeByPartialNamesAndPosition(@Param("firstName") String firstName, @Param("lastName") String lastName,
+                                                        @Param("position") String position, @Param("status") List<String> status,
+                                                        Pageable pageable) ;
 
     @Query(value = "select  ci.country as country, ci.state as state , count(e.employeeId) as count\n" +
             "from Employee as e join ContactInformation as ci \n" +

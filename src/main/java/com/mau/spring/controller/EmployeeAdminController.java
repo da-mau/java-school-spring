@@ -7,6 +7,9 @@ import com.mau.spring.entity.Employee;
 import com.mau.spring.entity.Position;
 import com.mau.spring.service.EmployeeService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,16 +84,21 @@ public class EmployeeAdminController extends AbstractEmployeeController {
     }
 
     @GetMapping("/employee/search")
-    public ResponseEntity addPosition(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String position, @RequestParam(defaultValue = "false") boolean includeInactive) throws ParseException {
+    public ResponseEntity addPosition(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String position,
+                                      @RequestParam(defaultValue = "false") boolean includeInactive,
+                                      @RequestParam(defaultValue = "0") Integer pageNo,
+                                      @RequestParam(defaultValue = "10") Integer pageSize) throws ParseException {
         List<String> status;
         if(includeInactive){
             status = List.of(Employee.STATUS_INACTIVE, Employee.STATUS_ACTIVE);
         }else{
             status = List.of(Employee.STATUS_ACTIVE);
         }
-        List<Employee> employees = employeeService.getEmployeeByNameAndPosition(firstName, lastName, position, status);
-        List<EmployeeAdminDTO> result = convertEmployeesToAdminDto(employees);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Employee> employees = employeeService.getEmployeeByNameAndPosition(firstName, lastName, position, status, pageable);
+        Page dtoPage = employees.map(this::convertEmployeeToAdminDto);
+
+        return new ResponseEntity<>(dtoPage, HttpStatus.OK);
     }
 
 

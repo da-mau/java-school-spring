@@ -5,6 +5,9 @@ import com.mau.spring.dto.EmployeeDTO;
 import com.mau.spring.entity.Employee;
 import com.mau.spring.service.EmployeeService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController()
-public class EmployeeController extends AbstractEmployeeController{
+public class EmployeeController extends AbstractEmployeeController {
     private final EmployeeService employeeService;
 
     public EmployeeController(EmployeeService employeeService, ModelMapper modelMapper) {
@@ -35,10 +38,14 @@ public class EmployeeController extends AbstractEmployeeController{
     }
 
     @GetMapping("/employee/search")
-    public ResponseEntity addPosition(@RequestParam String firstName, @RequestParam String lastName, @RequestParam String position) throws ParseException {
+    public ResponseEntity addPosition(@RequestParam String firstName, @RequestParam String lastName,
+                                      @RequestParam String position,
+                                      @RequestParam(defaultValue = "0") Integer pageNo,
+                                      @RequestParam(defaultValue = "10") Integer pageSize) throws ParseException {
         List<String> status = List.of(Employee.STATUS_ACTIVE);
-        List<Employee> employees = employeeService.getEmployeeByNameAndPosition(firstName, lastName, position, status);
-        List<EmployeeDTO> result = convertEmployeesToDto(employees);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Employee> employees = employeeService.getEmployeeByNameAndPosition(firstName, lastName, position, status, pageable);
+        Page dtoPage = employees.map(this::convertEmployeeToDto);
+        return new ResponseEntity<>(dtoPage, HttpStatus.OK);
     }
 }
