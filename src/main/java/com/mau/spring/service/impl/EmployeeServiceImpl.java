@@ -6,6 +6,8 @@ import com.mau.spring.exception.DuplicatedMailException;
 import com.mau.spring.repository.EmployeeRepository;
 import com.mau.spring.service.EmployeeService;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -108,7 +110,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getEmployeeByNameAndPosition(String firstName, String lastName, String position, List<String> status){
-        return employeeRepository.getEmployeeByPartialNamesAndPosition(firstName, lastName, position, status);
+    public Page<Employee> getEmployeeByNameAndPosition(String firstName, String lastName, String position, List<String> status,
+                                                       Pageable pageable){
+        return employeeRepository.getEmployeeByPartialNamesAndPosition(firstName, lastName, position, status, pageable);
     }
 }

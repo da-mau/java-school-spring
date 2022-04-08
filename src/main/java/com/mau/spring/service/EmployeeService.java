@@ -2,6 +2,8 @@ package com.mau.spring.service;
 
 import com.mau.spring.entity.Employee;
 import com.mau.spring.entity.Position;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,5 +14,6 @@ public interface EmployeeService {
     boolean updateEmployee(Employee employee);
     boolean deleteEmployee(Long id);
     boolean addPosition(Position position, Long id);
-    List<Employee> getEmployeeByNameAndPosition(String firstName, String lastName, String position, List<String> status);
+    Page<Employee> getEmployeeByNameAndPosition(String firstName, String lastName, String position, List<String> status
+    , Pageable pageable);
 }
