@@ -1,5 +1,6 @@
 package com.mau.spring.service;
 
+import com.mau.spring.entity.Employee;
 import com.mau.spring.projection.EmployeeByLocation;
 import com.mau.spring.projection.GenderEmployee;
 import com.mau.spring.projection.PositionEmployee;
@@ -13,4 +14,6 @@ public interface ReportService {
     List<GenderEmployee> getGenderPercentages();
     List<SalaryRangesByPosition> getSalaryRangesByPosition();
     List<EmployeeByLocation> getEmployeesByLocation();
+    public List<Employee> getCurrentBirthdays();
+    public List<Employee> getNextWeekBirthdays();
 }

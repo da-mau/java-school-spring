@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
@@ -50,4 +53,21 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "order by ci.country")
     List<EmployeeByLocation> getEmployeesByCountryAndState();
 
+    @Query(value = "select *\n" +
+            "from employee e \n" +
+            "where e.status = 'Active' \n" +
+            "and date_part('day', e.birthday) = date_part('day', CURRENT_DATE) \n" +
+            "and date_part('month', e.birthday) = date_part('month', CURRENT_DATE) ",
+            nativeQuery = true)
+    List<Employee> getCurrentBirthdays();
+
+    @Query(value = "select *\n" +
+            "from employee e \n" +
+            "where e.status = 'Active' \n" +
+            "and date_part('day', e.birthday) >= date_part('day', to_date(:startDate, 'YYYY-MM-DD')) \n" +
+            "and date_part('day', e.birthday) <= date_part('day', to_date(:endDate, 'YYYY-MM-DD')) \n" +
+            "and date_part('month', e.birthday) >= date_part('month', to_date(:startDate, 'YYYY-MM-DD')) \n"+
+            "and date_part('month', e.birthday) <= date_part('month', to_date(:endDate, 'YYYY-MM-DD'))",
+            nativeQuery = true)
+    List<Employee> getNextWeekBirthdays(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

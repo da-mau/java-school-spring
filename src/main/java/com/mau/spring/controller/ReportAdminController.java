@@ -1,5 +1,7 @@
 package com.mau.spring.controller;
 
+import com.mau.spring.dto.EmployeeDTO;
+import com.mau.spring.entity.Employee;
 import com.mau.spring.projection.EmployeeByLocation;
 import com.mau.spring.projection.GenderEmployee;
 import com.mau.spring.projection.PositionEmployee;

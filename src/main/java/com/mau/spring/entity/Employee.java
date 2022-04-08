@@ -22,6 +22,7 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String gender;
+    @Temporal(TemporalType.DATE)
     private Date birthday;
     private String status;
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
